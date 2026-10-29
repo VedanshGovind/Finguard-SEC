@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+python-multipart
+pydantic
+numpy
+opencv-python<5
+pillow
+torch
+torchvision
+timm
+librosa
+soundfile
+moviepy
+SpeechRecognition

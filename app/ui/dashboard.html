@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard | Finguard AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/styles.css">
+<script src="js/common.js"></script>
+<script>try{if(sessionStorage.getItem("fg_welcome"))document.documentElement.classList.add("welcome-on")}catch(e){}</script>
+</head>
+<body>
+<div id="welcome" role="status" aria-live="polite">
+  <div>
+    <svg class="w-shield" width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5z"/><path pathLength="1" d="M9 12l2 2 4-4"/></svg>
+    <div class="w-tag mono">ACCESS GRANTED</div>
+    <div class="w-title">Welcome,</div>
+    <div class="w-line" aria-hidden="true"></div>
+    <div class="w-msg mono" id="wMsg"></div>
+  </div>
+</div>
+<header class="topbar">
+  <div class="brand">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>
+    FINGUARD AI
+  </div>
+  <div class="chip mono" aria-live="polite">
+    <span class="dot" id="dot"></span><span id="st">Checking</span>
+    <span class="sep opt"></span><span class="opt" id="mode">-</span>
+    <span class="sep opt"></span><span class="opt" id="dev">-</span>
+    <span class="sep"></span><span class="ep" id="ep">-</span>
+  </div>
+  <button class="btn-ln" id="theme" type="button">Light / Dark</button>
+  <span class="mono mu small" id="user"></span>
+  <button class="btn-ln" id="out" type="button">Sign out</button>
+</header>
+
+<main class="main">
+  <h1 class="title">Deepfake Detection Dashboard</h1>
+  <p class="mu mb-0">Autonomous forensic analysis for video and audio</p>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-kind="video">Video Analysis</button>
+    <button role="tab" aria-selected="false" data-kind="audio">Audio Analysis</button>
+    <button role="tab" aria-selected="false" data-kind="live">Live Analysis</button>
+  </div>
+  <div id="panels">
+    <section id="livePanel" hidden>
+      <div class="live">
+        <div class="card2 codecard">
+          <h2>Session code</h2>
+          <div class="code mono" id="liveCode"></div>
+          <p class="hint">Read this code aloud, clearly, while recording. A new code is issued on reset.</p>
+          <button class="btn-ln" id="newCode" type="button">New code</button>
+        </div>
+        <div class="card2">
+          <h2>Live capture</h2>
+          <div class="vframe" id="vframe">
+            <span class="recdot" id="recdot" hidden></span>
+            <video id="liveVideo" autoplay muted playsinline></video>
+            <div class="vover mono" id="liveStatus">Initializing camera...</div>
+          </div>
+          <div class="level" aria-hidden="true"><i id="levelBar"></i></div>
+          <div class="ctrls">
+            <button class="btn-fg" id="recStart" type="button" disabled>START</button>
+            <button class="btn-fg" id="recStop" type="button" disabled>STOP AND VERIFY</button>
+            <button class="btn-ln" id="recReset" type="button">RESET</button>
+          </div>
+          <div class="bar" id="liveBar" hidden><i></i></div>
+          <div class="err" id="liveErr" hidden></div>
+          <div id="liveRes" aria-live="polite"></div>
+        </div>
+        <div class="card2">
+          <h2>Forensic metadata</h2>
+          <div class="metagrid" id="metaGrid"></div>
+          <details class="mt-3"><summary class="mu small">View raw JSON payload</summary><pre class="mono small mt-2 mb-0" id="metaRaw"></pre></details>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<template id="tpl">
+  <section>
+    <label class="dz" data-r="dz">
+      <input type="file" class="visually-hidden" data-r="file">
+      <b data-r="dzMain">Drop a file here, or click to browse</b>
+      <small data-r="dzHint"></small>
+    </label>
+    <div class="err" data-r="fileErr" hidden></div>
+    <div class="empty" data-r="empty">Upload a file above to begin forensic analysis.</div>
+
+    <div class="work" data-r="work" hidden>
+      <div class="card2">
+        <h2>Source</h2>
+        <div class="media" data-r="media"></div>
+        <dl class="meta mono" data-r="meta"></dl>
+      </div>
+      <div class="card2">
+        <h2>Analysis</h2>
+        <div class="thr"><label for="thr">Sensitivity threshold</label><output class="mono" data-r="thrOut">75%</output></div>
+        <input class="form-range" id="thr" type="range" min="0" max="100" step="1" value="75" data-r="thr">
+        <p class="hint" data-r="thrHint"></p>
+        <button class="btn-fg" type="button" data-r="go">ANALYZE</button>
+        <div class="bar" data-r="bar" hidden><i></i></div>
+        <div class="small mu mt-2 mono" data-r="prog" hidden></div>
+        <div class="err" data-r="err" hidden></div>
+
+        <div class="res" data-r="res" hidden>
+          <div class="d-flex justify-content-between align-items-start">
+            <div><div class="mu small">Deepfake confidence</div><div class="score mono" data-r="score"></div></div>
+            <span class="badge2 mono" data-r="badge"></span>
+          </div>
+          <div class="meter"><i data-r="fill"></i><u data-r="mark"></u></div>
+          <dl class="kv mono"><dt>Risk level</dt><dd data-r="risk"></dd><dt>File</dt><dd class="text-break" data-r="rfile"></dd></dl>
+          <div class="thr-note" data-r="thrNote"></div>
+          <p class="explain" data-r="explain"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

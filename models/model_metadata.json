@@ -1,0 +1,5 @@
+{
+    "model_name": "Xception-Pretrained",
+    "version": "1.0.0",
+    "architecture": "Xception"
+}

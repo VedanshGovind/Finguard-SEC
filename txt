@@ -1,0 +1,71 @@
+deepfake-edge-agent/
+│
+├── README.md
+│
+├── requirements.txt
+├── .gitignore
+│
+├── app/
+│   ├── main.py
+│   ├── config.py
+│   └── ui/
+│       └── streamlit_app.py
+│
+├── agent/
+│   ├── __init__.py
+│   ├── decision_engine.py
+│   ├── policy_rules.py
+│   └── explanation_engine.py
+│
+├── inference/
+│   ├── __init__.py
+│   ├── model_loader.py
+│   ├── deepfake_infer.py
+│   └── temporal_aggregation.py
+│
+├── preprocessing/
+│   ├── __init__.py
+│   ├── video_loader.py
+│   ├── frame_sampler.py
+│   ├── normalization.py
+│   └── compression_handler.py
+│
+├── face_detection/
+│   ├── __init__.py
+│   ├── face_detector.py
+│   └── face_aligner.py
+│
+├── security/
+│   ├── __init__.py
+│   ├── offline_guard.py
+│   └── integrity_check.py
+│
+├── logging/
+│   ├── __init__.py
+│   ├── event_logger.py
+│   └── local_store.py
+│
+├── models/
+│   ├── deepfake_model.pth
+│   └── model_metadata.json
+│
+├── data/
+│   ├── sample_videos/
+│   ├── test_cases/
+│   └── mock_attacks/
+│
+├── utils/
+│   ├── __init__.py
+│   ├── constants.py
+│   ├── device_info.py
+│   └── helpers.py
+│
+├── diagrams/
+│   ├── architecture.png
+│   ├── workflow.png
+│   └── roadmap.png
+│
+└── future/
+    ├── federated_learning.md
+    ├── rbac_mfa.md
+    └── bodycam_integration.md
