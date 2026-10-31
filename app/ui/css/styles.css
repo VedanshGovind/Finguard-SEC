@@ -115,3 +115,4 @@ h1.title{font-size:1.6rem;font-weight:600;margin:0}
 .metagrid h3{font-size:.7rem;letter-spacing:.12em;color:var(--mu);margin:0 0 .5rem;font-weight:600}
 .meta dd{min-width:0}
 details pre{white-space:pre-wrap;word-break:break-all;color:var(--mu)}
+.vframe{box-shadow:0 0 calc(8px + 64px * var(--glow, 0)) calc(3px * var(--glow, 0)) rgba(255, 219, 170, calc(.6 * var(--glow, 0)))}

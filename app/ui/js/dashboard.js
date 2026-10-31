@@ -27,11 +27,10 @@
   })();
 
   /* Header: live status */
-  $("ep").textContent = FG.API || location.origin; $("ep").title = $("ep").textContent;
   function health() {
     fetch(FG.API + "/health").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) {
-      $("dot").className = "dot on"; $("st").textContent = "Online"; $("mode").textContent = d.mode || "-"; $("dev").textContent = String(d.device || "-").toUpperCase();
-    }).catch(function () { $("dot").className = "dot off"; $("st").textContent = "Unreachable"; $("mode").textContent = $("dev").textContent = "-"; });
+      $("dot").className = "dot on"; $("st").textContent = "Online";
+    }).catch(function () { $("dot").className = "dot off"; $("st").textContent = "Unreachable"; });
   }
   health(); setInterval(health, 15000);
   $("theme").onclick = FG.toggleTheme;
@@ -181,13 +180,23 @@
     function err(m) { errB.textContent = m || ""; errB.hidden = !m; }
     function buttons() { bStart.disabled = !stream || recording || busy; bStop.disabled = !recording; bReset.disabled = recording || busy; }
     function newCode() {
-      var a = new Uint32Array(1); crypto.getRandomValues(a);
-      code = String(a[0] % 1000000).padStart(6, "0"); $("liveCode").textContent = code.slice(0, 3) + " " + code.slice(3);
+      var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", a = new Uint8Array(6);
+      do {
+        crypto.getRandomValues(a);
+        code = Array.prototype.map.call(a, function (n) { return chars[n & 31]; }).join("");
+      } while (!/[A-Z]/.test(code) || !/[2-9]/.test(code));
+      $("liveCode").textContent = code.slice(0, 3) + " " + code.slice(3);
     }
 
     function meter() {
-      var d = new Uint8Array(an.frequencyBinCount);
-      (function tick() { raf = requestAnimationFrame(tick); an.getByteFrequencyData(d); var s = 0; for (var i = 0; i < d.length; i++) s += d[i]; lvl.style.width = Math.min(100, s / d.length / 1.5) + "%"; })();
+      var d = new Uint8Array(an.frequencyBinCount), glow = 0;
+      (function tick() {
+        raf = requestAnimationFrame(tick); an.getByteFrequencyData(d);
+        var s = 0; for (var i = 0; i < d.length; i++) s += d[i];
+        var avg = s / d.length; lvl.style.width = Math.min(100, avg / 1.5) + "%";
+        glow += (Math.min(1, Math.max(0, avg - 12) / 70) - glow) * 0.25;
+        frame.style.setProperty("--glow", glow.toFixed(3));
+      })();
     }
     function open() {
       if (stream) return;
@@ -201,7 +210,7 @@
     }
     function close() {
       if (recording || busy || !stream) return;
-      cancelAnimationFrame(raf); lvl.style.width = "0";
+      cancelAnimationFrame(raf); lvl.style.width = "0"; frame.style.setProperty("--glow", 0);
       stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; v.srcObject = null;
       if (ac) { ac.close().catch(function () {}); ac = an = null; }
       status("Camera released"); buttons();
